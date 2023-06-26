@@ -1,14 +1,12 @@
 import cv2
 
+img = cv2.imread("/home/rodion/yuliia0/aboba/cv/histo/cat2.png")
+cv2.imshow('original', img)
 
-src = cv.imread(cv.samples.findFile(args.input))
-if src is None:
- print('Could not open or find the image:', args.input)
- exit(0)
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+cv2.imshow('gray', img)
 
-src = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
-dst = cv.equalizeHist(src)
+img = cv2.equalizeHist(img)
 
-cv.imshow('Source image', src)
-cv.imshow('Equalized Image', dst)
-cv.waitKey()
+cv2.imshow('histo 1', img)
+cv2.waitKey(0)

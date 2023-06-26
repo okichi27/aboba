@@ -1,7 +1,7 @@
-import cv2 as cv
+import cv2
 import numpy as np
 
-src = cv.imread("/home/rodion/yuliia0/aboba/cv/trans/my.jpg")
+src = cv2.imread("/home/rodion/yuliia0/aboba/cv/trans/my.jpg")
 map_x = np.zeros((src.shape[0], src.shape[1]), dtype=np.float32)
 map_y = np.zeros((src.shape[0], src.shape[1]), dtype=np.float32)
 
@@ -32,18 +32,18 @@ def update_map(ind, map_x, map_y):
             map_y[:,j] = [map_y.shape[0]-y for y in range(map_y.shape[0])]
 
 update_map(0, map_x, map_y)
-dst = cv.remap(src, map_x, map_y, cv.INTER_LINEAR)
-cv.imshow("Remap 1", dst)
+dst = cv2.remap(src, map_x, map_y, cv2.INTER_LINEAR)
+cv2.imshow("Remap 1", dst)
 
 update_map(1, map_x, map_y)
-d = cv.remap(src, map_x, map_y, cv.INTER_LINEAR)
-cv.imshow("Remap 2", d)
+d = cv2.remap(src, map_x, map_y, cv2.INTER_LINEAR)
+cv2.imshow("Remap 2", d)
 
 update_map(2, map_x, map_y)
-ds = cv.remap(src, map_x, map_y, cv.INTER_LINEAR)
-cv.imshow("Remap 3", ds)
+ds = cv2.remap(src, map_x, map_y, cv2.INTER_LINEAR)
+cv2.imshow("Remap 3", ds)
 
 update_map(3, map_x, map_y)
-dstq = cv.remap(src, map_x, map_y, cv.INTER_LINEAR)
-cv.imshow("Remap 4", dstq)
-cv.waitKey(0)
+dstq = cv2.remap(src, map_x, map_y, cv2.INTER_LINEAR)
+cv2.imshow("Remap 4", dstq)
+cv2.waitKey(0)
