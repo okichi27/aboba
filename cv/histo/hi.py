@@ -55,7 +55,7 @@ def main(argv):
     cv.waitKey(0)
     return 0
     ## [wait_key]
-
+matchLoc
 def MatchingMethod(param):
 
     global match_method
