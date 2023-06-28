@@ -19,4 +19,4 @@ for i in range(len(contours)):
     cv2.drawContours(drawing, hull_list, i, (50,150,100))
     cv2.imshow('Contours', drawing)
 
-cv2.waitKey()
+cv2.waitKey(0)
