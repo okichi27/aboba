@@ -13,7 +13,6 @@ vert[5] = (600, 330)
 vert[6] = (620, 180)
 vert[7] = (500, 130)
 
-
 for i in range(8):
     cv2.line(img, vert[i],  vert[(i+1)%8], ( 255 ), 3)
 
@@ -44,4 +43,4 @@ cv2.circle(drawing,maxDistPt, int(maxVal),(255,0,255), 1, cv2.LINE_8, 0)
 
 cv2.imshow('omg', img)
 cv2.imshow('cool drawing', drawing)
-cv2.waitKey()
+cv2.waitKey(0)

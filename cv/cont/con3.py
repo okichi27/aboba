@@ -26,4 +26,4 @@ for i in range(len(contours)):
     int(boundRect[i][1]+boundRect[i][3])), (100,10,40), 2)
     cv2.circle(drawing, (int(centers[i][0]), int(centers[i][1])), int(radius[i]), (50,10,140), 2)
     cv2.imshow('drawing', drawing)
-cv2.waitKey()
+cv2.waitKey(0)
