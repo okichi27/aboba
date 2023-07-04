@@ -2,14 +2,14 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/4.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/6.jpg")
 cv2.imshow("original", img)
+
 
 """початок знаходження кола"""
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 rows = img.shape[0]
-circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=80, maxRadius=130)
-print(circles)
+circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=75, maxRadius=85)
 
 drawing = np.zeros((img.shape[0], img.shape[1], 3), dtype=np.uint8) 
 for i in circles[0, :]:
@@ -18,15 +18,15 @@ for i in circles[0, :]:
   r=int(i[2])
   d=2*r
   cv2.circle(drawing, (x, y), r, (0, 0, 255), 2)
-  cv2.imshow("orl",drawing)
+  cv2.imshow("orl", drawing)
 """кінець кола"""
 
 """перевірка рамки"""
 x=g.shape[0]
 y=g.shape[1]
+print("x-",x,"y-",y)
 ramax=x-d
 ramay=y-d
-print("x-",x,"y-",y)
 if ramax and ramay >36:
    rama=15
 else:
@@ -50,21 +50,5 @@ for i in range(len(contours)):
 cropnew = cv2.GaussianBlur(crop, (5, 5),0)
 image = cv2.Canny(cropnew, 10, 10, 20)
 cv2.imshow("image",image )
-'''lines = cv2.HoughLines(image, 1, np.pi / 180, 70, None)
-print ("lines -",lines)
 
-for i in range(0, len(lines)):
- a = math.cos(lines[i][0][1])
- b = math.sin(lines[i][0][1])
- x0 = a * lines[i][0][0]
- y0 = b * lines[i][0][1]
- pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
- pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-
-cv2.line (cropnew, pt1, pt2, (0,0,255), 6, cv2.LINE_AA)
-linesP = cv2.HoughLinesP(image, 1, np.pi / 90, 50, None, 10, 10)
-for i in range(0, len(linesP)):
- l = linesP[i][0]
- cv2.line (cropp, (l[0], l[1]), (l[2], l[3]), (0,255,0), 2, cv2.LINE_AA)
-cv2.imshow(" Line Transform", cropp)'''
 cv2.waitKey(0)
