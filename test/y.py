@@ -51,13 +51,27 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
-lsd = cv2.createLineSegmentDetector()
-gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+cropnew = cv2.GaussianBlur(crop, (5, 5),0)
+image = cv2.Canny(cropnew, 10, 200, 20)
+lines = cv2.HoughLines(image, 1, np.pi / 180, 70, None)
+print ("lines -",lines)
 
-lines, _, _, _ = lsd.detect(gray)
+for i in range(0, len(lines)):
+ a = math.cos(lines[i][0][1])
+ b = math.sin(lines[i][0][1])
+ x0 = a * lines[i][0][0]
+ y0 = b * lines[i][0][1]
+ pt1 = (int(x0 + 1*(-b)), int(y0 + 1*(a)))
+ print("pt1=",pt1)
+ pt2 = (int(x0 - 1*(-b)), int(y0 - 1*(a)))
+ print("pt2=",pt2)
 
-drawn = lsd.drawSegments(crop, lines)
-
-cv2.imshow('Detected Lines', drawn)
+cv2.line (cropnew, pt1, pt2, (0,0,255), 6, cv2.LINE_AA)
+linesP = cv2.HoughLinesP(image,rho = 1,theta = 1*np.pi/180,threshold = 60,minLineLength = 20,maxLineGap = 30)
+for i in range(0, len(linesP)):
+ l = linesP[i][0]
+ cv2.line (crop, (l[0], l[1]), (l[2], l[3]), (0,200,100), 2, cv2.LINE_AA)
+cv2.imshow("image",image )
+cv2.imshow(" Line Transform", crop)
 
 cv2.waitKey(0)
