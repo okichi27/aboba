@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/6.jpg")
 '''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
@@ -49,42 +49,13 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
-cropnew = cv2.GaussianBlur(crop, (7, 7),0)
-image = cv2.Canny(cropnew, 120, 210, 110)
-'''cv2.imshow("image",image )'''
-lines = cv2.HoughLines(image, 1, np.pi / 180, 70, None)
+gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+cropnew = cv2.GaussianBlur(gray_crop, (7, 7),0)
+image = cv2.Canny(cropnew, 250, 500, 220)
+cv2.imshow("i",image )
+ret,image = cv2.threshold(image, 60, 100, cv2.THRESH_BINARY)
+contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-for i in range(0, len(lines)):
- a = math.cos(lines[i][0][1])
- b = math.sin(lines[i][0][1])
- x0 = a * lines[i][0][0]
- y0 = b * lines[i][0][1]
- pt1 = (int(x0 + 1000*(-b)), int(y0 + 1000*(a)))
- pt2 = (int(x0 - 1000*(-b)), int(y0 - 1000*(a)))
-
-draw= np.zeros((crop.shape[0], crop.shape[1], 3), dtype=np.uint8) 
-
-cv2.line (cropnew, pt1, pt2, (0,0,255), 6, cv2.LINE_AA)
-linesP = cv2.HoughLinesP(image,rho = 1,theta = 1*np.pi/180,threshold = 69,minLineLength = 15,maxLineGap = 20)
-for i in range(0, len(linesP)):
- l = linesP[i][0]
- cv2.line (draw, (l[0], l[1]), (l[2], l[3]), (255,255,255), 2, cv2.LINE_AA)
-
-draw= cv2.GaussianBlur(draw, (15, 15),0)
-ker = np.ones((5, 5), np.uint8)
-open = cv2.erode(cv2.dilate(cv2.erode(draw, ker),ker),ker)
-open=cv2.filter2D(open,-1,ker)
-open = cv2.erode(cv2.erode(open, ker),ker)
-
-lsd = cv2.createLineSegmentDetector()
-gray = cv2.cvtColor(open, cv2.COLOR_BGR2GRAY)
-lines, _, _, _ = lsd.detect(gray)
-drawn = lsd.drawSegments(crop, lines)
-cv2.imshow('Detected Lines', drawn)
-
-cv2.imshow(" Line ", draw)
-cv2.imshow("open", open)
-
-
-
+cv2.drawContours(crop, contours, -1, (20,10,230), 2)
+cv2.imshow("image",crop)
 cv2.waitKey(0)

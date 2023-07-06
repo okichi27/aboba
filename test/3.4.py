@@ -53,7 +53,7 @@ cropnew = cv2.GaussianBlur(crop, (7, 7),0)
 image = cv2.Canny(cropnew, 120, 210, 110)
 '''cv2.imshow("image",image )'''
 lines = cv2.HoughLines(image, 1, np.pi / 180, 70, None)
-
+print('len(lines) - ', len(lines))
 for i in range(0, len(lines)):
  a = math.cos(lines[i][0][1])
  b = math.sin(lines[i][0][1])
@@ -72,13 +72,12 @@ for i in range(0, len(linesP)):
 
 draw= cv2.GaussianBlur(draw, (15, 15),0)
 ker = np.ones((7, 7), np.uint8)
-open = cv2.morphologyEx(draw,cv2.MORPH_ERODE,ker,11)
-
-
+open = cv2.morphologyEx(draw,cv2.MORPH_ERODE,ker,14)
 lsd = cv2.createLineSegmentDetector()
 gray = cv2.cvtColor(open, cv2.COLOR_BGR2GRAY)
 lines, _, _, _ = lsd.detect(gray)
 drawn = lsd.drawSegments(crop, lines)
+print(len(lines))
 cv2.imshow('Detected Lines', drawn)
 
 cv2.imshow(" Line ", draw)

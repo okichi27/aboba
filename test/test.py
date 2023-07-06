@@ -22,7 +22,6 @@ for i in circles[0, :]:
   r=int(i[2])
   d=2*r
   cv2.circle(drawing, (x, y), r, (0, 0, 255), 2)
-  cv2.imshow("orl", drawing)
 """кінець кола"""
 
 """перевірка рамки"""
