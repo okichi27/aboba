@@ -49,13 +49,15 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
+
 gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 cropnew = cv2.GaussianBlur(gray_crop, (9, 9),0)
-image = cv2.Canny(cropnew, 240, 430, 500)
+image = cv2.Canny(cropnew, 240, 440, 500)
 cv2.imshow("i",image )
-ret,image = cv2.threshold(image, 60, 100, cv2.THRESH_BINARY)
-contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
+ret,image = cv2.threshold(image, 250, 160, cv2.THRESH_BINARY)
+contours, hierarchy = cv2.findContours(image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_TC89_KCOS)
+cv2.imshow("ima",image )
 cv2.drawContours(crop, contours, -1, (20,10,230), 2)
+
 cv2.imshow("image",crop)
 cv2.waitKey(0)

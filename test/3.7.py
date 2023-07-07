@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/6.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
 '''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
@@ -57,5 +57,7 @@ ret,image = cv2.threshold(image, 60, 100, cv2.THRESH_BINARY)
 contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 cv2.drawContours(crop, contours, -1, (20,10,230), 2)
+bn=contours.shape[1]
+print(bn)
 cv2.imshow("image",crop)
 cv2.waitKey(0)
