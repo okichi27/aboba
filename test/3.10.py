@@ -3,8 +3,7 @@ import numpy as np
 import math
 
 img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/1.jpg")
-cv2.imshow("original", img)
-
+'''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -22,13 +21,11 @@ for i in circles[0, :]:
   r=int(i[2])
   d=2*r
   cv2.circle(drawing, (x, y), r, (0, 0, 255), 2)
-  cv2.imshow("orl", drawing)
 """кінець кола"""
 
 """перевірка рамки"""
 x=g.shape[0]
 y=g.shape[1]
-print("x-",x,"y-",y)
 ramax=x-d
 ramay=y-d
 if ramax and ramay >36:
@@ -51,27 +48,36 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
-cropnew = cv2.GaussianBlur(crop, (5, 5),0)
-image = cv2.Canny(cropnew, 10, 200, 20)
-lines = cv2.HoughLines(image, 1, np.pi / 180, 70, None)
-print ("lines -",lines)
+gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+gray_crop = cv2.GaussianBlur(gray_crop, (5, 5),0)
+image = cv2.Canny(gray_crop, 250, 350, 20)
+cv2.imshow("i",image )
+minLineLength=200
+maxlineGap=20
+lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
 
-for i in range(0, len(lines)):
- a = math.cos(lines[i][0][1])
- b = math.sin(lines[i][0][1])
- x0 = a * lines[i][0][0]
- y0 = b * lines[i][0][1]
- pt1 = (int(x0 + 1*(-b)), int(y0 + 1*(a)))
- print("pt1=",pt1)
- pt2 = (int(x0 - 1*(-b)), int(y0 - 1*(a)))
- print("pt2=",pt2)
-
-cv2.line (cropnew, pt1, pt2, (0,0,255), 6, cv2.LINE_AA)
-linesP = cv2.HoughLinesP(image,rho = 1,theta = 1*np.pi/180,threshold = 60,minLineLength = 20,maxLineGap = 30)
-for i in range(0, len(linesP)):
- l = linesP[i][0]
- cv2.line (crop, (l[0], l[1]), (l[2], l[3]), (0,200,100), 2, cv2.LINE_AA)
-cv2.imshow("image",image )
-cv2.imshow(" Line Transform", crop)
-
+crop_x=crop.shape[0]
+crop_y=crop.shape[1]
+print('crop x-',crop_x,'crop y- ',crop_y)
+xcr=(crop_x/8)
+ycr=(crop_y/8)
+crop_x1=crop_x - xcr
+crop_y1=crop_y - ycr
+print('xcr-',xcr,'ycr- ',ycr)
+print('crop_x1-',crop_x1,'crop_y1- ',crop_y1)
+if lines is not None:
+    for line in lines:
+        x1,y1,x2,y2 = line[0]
+        if xcr<x1<(crop_x1-20):
+            if ycr<y1<crop_y1:
+                dov=((y1-y2)**2+(x1-x2)**2)**0.5
+                print("dov-", dov)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)  
+            else:
+                print("y none")  
+        else:
+            print("x none")
+    cv2.imshow("show",crop)
+else:
+    print("biba")
 cv2.waitKey(0)

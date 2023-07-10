@@ -3,14 +3,13 @@ import numpy as np
 import math
 
 img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/1.jpg")
-cv2.imshow("original", img)
-
+'''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 rows = img.shape[0]
 if rows >231:
-    circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=96, maxRadius=130)
+    circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=32, minRadius=96, maxRadius=130)
 else:
     circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=75, maxRadius=85)
 
@@ -27,7 +26,6 @@ for i in circles[0, :]:
 """перевірка рамки"""
 x=g.shape[0]
 y=g.shape[1]
-print("x-",x,"y-",y)
 ramax=x-d
 ramay=y-d
 if ramax and ramay >36:
@@ -50,8 +48,36 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
-cropnew = cv2.GaussianBlur(crop, (5, 5),0)
-image = cv2.Canny(cropnew, 10, 10, 20)
-cv2.imshow("image",image )
+gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+gray_crop = cv2.GaussianBlur(gray_crop, (5, 5),0)
+image = cv2.Canny(gray_crop, 250, 350, 20)
+cv2.imshow("i",image )
+minLineLength=200
+maxlineGap=20
+lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
 
+crop_x=crop.shape[0]
+crop_y=crop.shape[1]
+print('crop x-',crop_x,'crop y- ',crop_y)
+xcr=(crop_x/7)
+ycr=(crop_y/9)*3
+crop_x1=crop_x - xcr
+crop_y1=crop_y - ycr
+print('xcr-',xcr,'ycr- ',ycr)
+print('crop_x1-',crop_x1,'crop_y1- ',crop_y1)
+if lines is not None:
+    for line in lines:
+        x1,y1,x2,y2 = line[0]
+        if xcr<x1<(crop_x1-20):
+            if ycr<y1<crop_y1:
+                dov=((y1-y2)**2+(x1-x2)**2)**0.5
+                print("dov-", dov)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)  
+            else:
+                print("y none")  
+        else:
+            print("x none")
+    cv2.imshow("show",crop)
+else:
+    print("biba")
 cv2.waitKey(0)
