@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/5.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/6.jpg")
 '''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
@@ -48,7 +48,7 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
-
+"""початок пошуку стрілки"""
 gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 gray_crop = cv2.GaussianBlur(gray_crop, (5, 5),0)
 image = cv2.Canny(gray_crop, 250, 350, 20)
@@ -59,20 +59,27 @@ lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
 
 crop_x=crop.shape[0]
 crop_y=crop.shape[1]
-print('crop x-',crop_x,'crop y- ',crop_y)
 xcr=(crop_x/7)
 ycr=(crop_y/9)*3
 crop_x1=crop_x - xcr
 crop_y1=crop_y - ycr
-print('xcr-',xcr,'ycr- ',ycr)
-print('crop_x1-',crop_x1,'crop_y1- ',crop_y1)
 if lines is not None:
     for line in lines:
         x1,y1,x2,y2 = line[0]
+        print("  x1-",x1,"  y1-",y1,"  x2-",x2,"  y2-",y2)
         if xcr<x1<(crop_x1-20):
             if ycr<y1<crop_y1:
+                """шукаємо кут"""
                 dov=((y1-y2)**2+(x1-x2)**2)**0.5
                 print("dov-", dov)
+                kat=((x1-x2)**2)**0.5
+                print("kat-", kat)
+                sin=kat/dov
+                print("sin-", sin)
+                kut=math.sin(sin)
+                print("kut-", kut)
+                """закінчили кут"""
+                """шукаємо від 180 на шкалу скільки має бути кут та виводимо текстком зверху зліва та знизу зправа"""
                 cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)  
             else:
                 print("y none")  
@@ -81,4 +88,12 @@ if lines is not None:
     cv2.imshow("show",crop)
 else:
     print("biba")
+"""закінчення пошуку стрілки"""
+
+
+
+
+
+
+
 cv2.waitKey(0)
