@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/6.jpg")
 '''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""
@@ -28,7 +28,6 @@ x=g.shape[0]
 y=g.shape[1]
 ramax=x-d
 ramay=y-d
-print("x-",x,"y-",y)
 if ramax and ramay >36:
    rama=15
 else:
@@ -49,13 +48,65 @@ for i in range(len(contours)):
     cv2.imshow("Area",crop )
 """кінець квадрат"""
 
+"""початок пошуку стрілки"""
 gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
-cropnew = cv2.GaussianBlur(gray_crop, (7, 7),0)
-image = cv2.Canny(cropnew, 250, 500, 220)
+gray_crop = cv2.GaussianBlur(gray_crop, (5, 5),0)
+image = cv2.Canny(gray_crop, 250, 350, 20)
 cv2.imshow("i",image )
-ret,image = cv2.threshold(image, 60, 100, cv2.THRESH_BINARY)
-contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+minLineLength=200
+maxlineGap=20
+lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
 
-cv2.drawContours(crop, contours, -1, (20,10,230), 2)
-cv2.imshow("image",crop)
+crop_x=crop.shape[0]
+crop_y=crop.shape[1]
+xcr=(crop_x/7)
+ycr=(crop_y/9)*3
+crop_x1=crop_x - xcr
+crop_y1=crop_y - ycr
+if lines is not None:
+    for line in lines:
+        x1,y1,x2,y2 = line[0]
+        print("  x1-",x1,"  y1-",y1,"  x2-",x2,"  y2-",y2)
+        if xcr<x1<(crop_x1-20):
+            if ycr<y1<crop_y1:
+                """шукаємо кут"""
+                dov=((y1-y2)**2+(x1-x2)**2)**0.5
+                print("dov-", dov)
+                kat=((x1-x2)**2)**0.5
+                print("kat-", kat)
+                sin=kat/dov
+                print("sin-", sin)
+                kut=np.arcsin(sin)
+                print("kut gr-", kut)
+                """закінчили кут"""
+                vysota=crop.shape[1]-2
+                print('vysota',int(vysota*0.5-1), "po ",vysota)
+                if (vysota*0.5-1)<y2<vysota:
+                    print("tak",y2)
+                    up=(10/180)*kut
+                    up=str(round(up,2))
+                    crop=cv2.putText(crop,up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                    print("up",up)
+                else:
+                    print("ni",y2)
+                    down=(120/180)*kut
+                    down=str(round(down,2))
+                    crop=cv2.putText(crop,down,(crop.shape[0]-35,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                    print("down",down)
+                """шукаємо від 180 на шкалу скільки має бути кут та виводимо текстком зверху зліва та знизу зправа"""
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)  
+                
+            else:
+                print("y none")  
+        else:
+            print("x none")
+    cv2.imshow("show",crop)
+else:
+    print("biba")
+"""закінчення пошуку стрілки"""
+
+
+
+
+
 cv2.waitKey(0)

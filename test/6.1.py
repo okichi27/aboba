@@ -63,6 +63,9 @@ xcr=(crop_x/7)
 ycr=(crop_y/9)*3
 crop_x1=crop_x - xcr
 crop_y1=crop_y - ycr
+
+list=[]
+
 if lines is not None:
     for line in lines:
         x1,y1,x2,y2 = line[0]
@@ -72,41 +75,54 @@ if lines is not None:
                 """шукаємо кут"""
                 dov=((y1-y2)**2+(x1-x2)**2)**0.5
                 print("dov-", dov)
-                kat=((x1-x2)**2)**0.5
-                print("kat-", kat)
-                sin=kat/dov
-                print("sin-", sin)
-                kut=np.arcsin(sin)
-                print("kut gr-", kut)
-                """закінчили кут"""
-                vysota=crop.shape[1]-2
-                print('vysota',int(vysota*0.5-1), "po ",vysota)
-                if (vysota*0.5-1)<y2<vysota:
-                    print("tak",y2)
-                    up=(10/180)*kut
-                    up=str(round(up,2))
-                    crop=cv2.putText(crop,up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
-                    print("up",up)
-                else:
-                    print("ni",y2)
-                    down=(120/180)*kut
-                    down=str(round(down,2))
-                    crop=cv2.putText(crop,down,(crop.shape[0]-35,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
-                    print("down",down)
-                """шукаємо від 180 на шкалу скільки має бути кут та виводимо текстком зверху зліва та знизу зправа"""
-                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)  
-                
+                """мікро-перерва для відшивання ліній"""
+                list.append((x1,y1,x2,y2,dov))
             else:
                 print("y none")  
-        else:
-            print("x none")
-    cv2.imshow("show",crop)
 else:
     print("biba")
 """закінчення пошуку стрілки"""
+"""початок розслідування"""
+print(list)
+sorted=sorted(list,key=lambda line:line[4],reverse=True)
+print(sorted)
 
-
-
-
-
+n=0
+while n<2:
+    x1,y1,x2,y2,dov=list[n]
+    n=n+1
+    kat=((x1-x2)**2)**0.5
+    print("kat-", kat)
+    sin=kat/dov
+    print("sin-", sin)
+    kut=np.arcsin(sin)
+    print("kut gr-", kut)
+    """закінчили кут"""
+    vysota=crop.shape[1]-2
+    print('vysota',int(vysota*0.5-1), "po ",vysota)
+    if (vysota*0.5-1)<y2<vysota:
+        if (crop.shape[0]*0.5)<x1<crop.shape[0]:
+            print("ліво верх")
+            print("tak",y2)
+            up=(10/180)*kut
+            up=str(round(up,2))
+            crop=cv2.putText(crop,up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+            print("up",up)
+        else:
+            print("право верх")
+    else:
+        print("ni",y2)
+        if (crop.shape[0]*0.5)<x1<crop.shape[0]:
+            print("ліво низ")
+            down=(120/180)*kut
+            down=str(round(down,2))
+            crop=cv2.putText(crop,down,(crop.shape[0]-35,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+            print("down",down)
+        else:
+            print("право низ")
+    """шукаємо від 180 на шкалу скільки має бути кут та виводимо текстком зверху зліва та знизу зправа"""
+    cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+    cv2.imshow("show",crop)
+else:
+    print("oj")
 cv2.waitKey(0)
