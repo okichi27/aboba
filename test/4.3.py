@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/5.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/4.jpg")
 '''cv2.imshow("original", img)'''
 
 """початок знаходження кола"""

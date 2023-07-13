@@ -2,8 +2,11 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/5.jpg")
-'''cv2.imshow("original", img)'''
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
+cv2.imshow("original", img)
+cv2.waitKey(0)
+skl1=int(input("Введіть максимальне значення верхньої поділки: "))
+skl2=int(input("Введіть максимальне значення нижньої поділки: "))
 
 """початок знаходження кола"""
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -86,35 +89,74 @@ else:
 print(list)
 sorted=sorted(list,key=lambda line:line[4],reverse=True)
 print(sorted)
-
+d=0
+u=0
 n=0
 while n<2:
     x1,y1,x2,y2,dov=list[n]
     n=n+1
-    kat=((x1-x2)**2)**0.5
-    print("kat-", kat)
-    sin=kat/dov
-    print("sin-", sin)
-    kut=np.arcsin(sin)
-    print("kut gr-", kut)
-    """закінчили кут"""
-    vysota=crop.shape[1]-2
-    print('vysota',int(vysota*0.5-1), "po ",vysota)
-    if (vysota*0.5-1)<y2<vysota:
-        print("tak",y2)
-        up=(10/180)*kut
-        up=str(round(up,2))
-        crop=cv2.putText(crop,up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
-        print("up",up)
-
+    print("shoce - ",(crop.shape[1])/2)
+    """почали шукати кут"""
+    if 0<y1<((crop.shape[1])*0.5):
+        while u<1:
+            u=u+1
+            print("u",u)
+            print("--------верх:")
+            kat=((y1-y2)**2)**0.5
+            print("katet-", kat)
+            print("dov-", dov)
+            sin=kat/dov
+            print("sin-", sin)
+            if 0<x1<(crop.shape[0]*0.5):
+                kut=np.arcsin(sin)
+                print("kut gr-", kut)
+                up=(skl1/(np.pi))*kut
+                l_up=str(round(up,2))
+                crop=cv2.putText(crop,l_up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                print("ліво верх")
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+            else:
+                kut=(np.pi)-np.arcsin(sin)
+                print("kut gr-", kut)
+                up=(skl1/(np.pi))*kut
+                r_up=str(round(up,2))
+                crop=cv2.putText(crop,r_up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                print("право верх")
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+        else:
+            print("None up line")
     else:
-        print("ni",y2)
-        down=(120/180)*kut
-        down=str(round(down,2))
-        crop=cv2.putText(crop,down,(crop.shape[0]-35,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
-        print("down",down)
-    """шукаємо від 180 на шкалу скільки має бути кут та виводимо текстком зверху зліва та знизу зправа"""
-    cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+        if d<1:
+            d+=1
+            print("d",d)
+            print("--------низ:")
+            print("y1-",y1,"y2-",y2)
+            kat=((y1-y2)**2)**0.5
+            print("katet-", kat)
+            print("dov-", dov)
+            sin=kat/dov
+            print("sin-", sin)
+            if 0<x1<(crop.shape[0]*0.5):
+                kut=np.arcsin(sin)
+                print("kut gr-", kut)
+                down=(skl2/(np.pi))*kut
+                rad=57.2958*kut
+                print("rad", rad)
+                l_down=str(round(down,2))
+                crop=cv2.putText(crop,l_down,(crop.shape[0]-45,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                print("ліво низ")
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+            else:
+                kut=(np.pi)-np.arcsin(sin)
+                print("kut gr-", kut)
+                down=(skl2/(np.pi))*kut
+                r_down=str(round(down,2))
+                crop=cv2.putText(crop,r_down,(crop.shape[0]-45,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
+                print("право низ")
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+        else:
+            print("None down line")
+    """шукаємо """
     cv2.imshow("show",crop)
 else:
     print("oj")
