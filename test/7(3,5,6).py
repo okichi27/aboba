@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/2.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
 cv2.imshow("original", img)
 cv2.waitKey(0)
 skl1=int(input("Введіть максимальне значення верхньої поділки: "))

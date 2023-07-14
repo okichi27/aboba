@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 
-img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/3.jpg")
+img=g=cv2.imread("/home/rodion/yuliia0/aboba/test/5.jpg")
 cv2.imshow("original", img)
 cv2.waitKey(0)
 skl1=int(input("Введіть максимальне значення верхньої поділки: "))
@@ -52,23 +52,26 @@ for i in range(len(contours)):
 """кінець квадрат"""
 
 """початок пошуку стрілки"""
-gray_crop=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+rotare = cv2.rotate(crop, cv2.ROTATE_180)
+gray_crop=cv2.cvtColor(rotare, cv2.COLOR_BGR2GRAY)
 gray_crop = cv2.GaussianBlur(gray_crop, (5, 5),0)
 image = cv2.Canny(gray_crop, 250, 350, 20)
 cv2.imshow("i",image )
 minLineLength=200
 maxlineGap=20
-lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
-
+image= cv2.rotate(image, cv2.ROTATE_180)
 crop_x=crop.shape[0]
 crop_y=crop.shape[1]
+matrix=cv2.getRotationMatrix2D((crop_x//2,crop_y//2),3,1.0)
+result=cv2.warpAffine(image,matrix,(crop_x,crop_y))
+lines=cv2.HoughLinesP(result,1,np.pi/180,30,minLineLength,maxlineGap)
+
 xcr=(crop_x/7)
 ycr=(crop_y/9)*3
 crop_x1=crop_x - xcr
 crop_y1=crop_y - ycr
 
 list=[]
-
 if lines is not None:
     for line in lines:
         x1,y1,x2,y2 = line[0]
@@ -84,15 +87,74 @@ if lines is not None:
                 print("y none")  
 else:
     print("biba")
-"""закінчення пошуку стрілки"""
-"""початок розслідування"""
 print(list)
 sorted=sorted(list,key=lambda line:line[4],reverse=True)
 print(sorted)
+
+non=0
+len_up=0
+len_down=0
+print("len(list)",len(list))
+for i in list:
+    if non<(len(list)):
+        print("non", non)
+        x1,y1,x2,y2,dov=list[non]
+        non=non+1
+        if 0<y1<((crop.shape[1])*0.5):
+            len_up=len_up+1
+        else:
+            len_down=len_down+1
+    else:
+        print("ok")
+print('len_up',len_up)
+print('len_down',len_down)
+if len_up>0 and len_down>0:
+    print("ypaaaaaaaa")
+else:
+    """початок повторення"""
+    dst = cv2.Laplacian (gray_crop, cv2.CV_8U, ksize=3)
+    image = cv2.Canny(dst, 400, 800, 60)
+    cv2.imshow("i",image )
+    minLineLength=200
+    maxlineGap=20
+    lines=cv2.HoughLinesP(image,1,np.pi/180,30,minLineLength,maxlineGap)
+
+    crop_x=crop.shape[0]
+    crop_y=crop.shape[1]
+    xcr=(crop_x/7)
+    ycr=(crop_y/9)*3
+    crop_x1=crop_x - xcr
+    crop_y1=crop_y - ycr
+
+    list=[]
+    if lines is not None:
+        for line in lines:
+            x1,y1,x2,y2 = line[0]
+            print("  x1-",x1,"  y1-",y1,"  x2-",x2,"  y2-",y2)
+            if xcr<x1<(crop_x1-20):
+                if ycr<y1<crop_y1:
+                    """шукаємо кут"""
+                    dov=((y1-y2)**2+(x1-x2)**2)**0.5
+                    print("dov-", dov)
+                    """мікро-перерва для відшивання ліній"""
+                    list.append((x1,y1,x2,y2,dov))
+                else:
+                    print("povtor y none")  
+    else:
+        print("biba")
+    print('list',list)
+
+    """повторення закінчено"""
+
 d=0
 u=0
 n=0
-while n<2:
+if len(list)>2:
+    k=3
+else:
+    k=2
+
+while n<k:
     x1,y1,x2,y2,dov=list[n]
     n=n+1
     print("shoce - ",(crop.shape[1])/2)
@@ -114,7 +176,7 @@ while n<2:
                 l_up=str(round(up,2))
                 crop=cv2.putText(crop,l_up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
                 print("ліво верх")
-                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),1)
             else:
                 kut=(np.pi)-np.arcsin(sin)
                 print("kut gr-", kut)
@@ -122,7 +184,7 @@ while n<2:
                 r_up=str(round(up,2))
                 crop=cv2.putText(crop,r_up,(8,15),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
                 print("право верх")
-                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),1)
         else:
             print("None up line")
     else:
@@ -145,7 +207,7 @@ while n<2:
                 l_down=str(round(down,2))
                 crop=cv2.putText(crop,l_down,(crop.shape[0]-45,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
                 print("ліво низ")
-                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),1)
             else:
                 kut=(np.pi)-np.arcsin(sin)
                 print("kut gr-", kut)
@@ -153,7 +215,7 @@ while n<2:
                 r_down=str(round(down,2))
                 crop=cv2.putText(crop,r_down,(crop.shape[0]-45,crop.shape[1]-8),cv2.FONT_HERSHEY_SIMPLEX,0.4,(250,2,0),1,cv2.LINE_AA)
                 print("право низ")
-                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),2)
+                cv2.line(crop,(x1,y1),(x2,y2),(0,255,0),1)
         else:
             print("None down line")
     """шукаємо """
