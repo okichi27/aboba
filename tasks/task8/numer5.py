@@ -42,8 +42,29 @@ for i in range(len(contours)):
 gray= cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 digits = []
 '''цифри'''
-
 image = glob.glob('new*.jpg')
+numer=0
+for name in image:
+    mask = cv2.imread(name)
+    width = mask.shape[0]
+    height = mask.shape[1]
+    digits.append(np.zeros((height, width), np.uint8))
+    '''cv2.putText(digits[-1], str(numer), (0, height), cv2.FONT_HERSHEY_SIMPLEX,3, (255, 255, 255), 5)'''
+    x0, y0, w, h = cv2.boundingRect(digits[-1])
+    digits[-1] = digits[-1][y0:y0+h, x0:x0+w]
+
+percent_white_pix = 0
+digit = 0
+scaled_img = cv2.resize(digits[-1], mask.shape[:2][::-1])
+bitwise = cv2.bitwise_and(digits[-1], cv2.bitwise_xor(scaled_img, digits[-1]))
+before = np.sum(digits[-1] == 255)
+matching = 100 - (np.sum(bitwise == 255) / before * 100)
+if percent_white_pix < matching:
+    percent_white_pix = matching
+    digit += 1
+
+
+'''image = glob.glob('new*.jpg')
 numer=0
 for name in image:
     mask = cv2.imread(name)
@@ -56,7 +77,7 @@ for name in image:
     x0, y0, w, h = cv2.boundingRect(digits[-1])
     digits[-1] = digits[-1][y0:y0+h, x0:x0+w]
 
-    '''cv2.imshow(digit, digits[-1])'''
+    cv2.imshow(digit, digits[-1])
     percent_white_pix = 0
     digit = 0
     scaled_img = cv2.resize(digits[-1], mask.shape[:2][::-1])
@@ -66,7 +87,7 @@ for name in image:
     if percent_white_pix < matching:
         percent_white_pix = matching
         digit += 1
-
+'''
 
 '''contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 for cnt in contours:

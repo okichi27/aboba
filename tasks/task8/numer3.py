@@ -34,18 +34,23 @@ for i in range(len(contours)):
     crop = g[(int(boundRect[i][1])):(int(boundRect[i][1]+boundRect[i][3])), (int(boundRect[i][0])):(int(boundRect[i][0]+boundRect[i][2]))]
     '''v2.imshow("Area",crop )'''
 """кінець квадрат"""
-img_display = crop.copy()
-image = glob.glob('*_numer.jpg')
-n=0
+ker=np.array([[-1,-1,-1],[-1,9,-1],[-1,-1,-1]])
+img_display=cv2.GaussianBlur(crop,(3,3),0)
+cv2.imshow("img_display",img_display )
+img_display=cv2.filter2D(img_display,-1,ker)
+cv2.imshow("img_display 2",img_display )
+
+image = glob.glob('new*.jpg')
+numer=0
 for name in image:
     mask = cv2.imread(name)
-    print(n)
+    cv2.imshow("mask{}".format(numer),mask )
+    numer+=1
     result=cv2.matchTemplate(crop,mask, cv2.TM_SQDIFF_NORMED)
     _minVal, _maxVal, minLoc, maxLoc = cv2.minMaxLoc(result, None)
-    cv2.rectangle(img_display, minLoc, (minLoc[0] + mask.shape[0], minLoc[1] + mask.shape[1]), (0,0,255), 2, 8, 0 )
-    cv2.rectangle(img_display, minLoc, (minLoc[0] + mask.shape[0], minLoc[1] + mask.shape[1]), (0,0,255), 2, 8, 0 )
-    cv2.imshow('mask{}'.format(n), img_display)
-    n+=1
+    cv2.rectangle(crop, minLoc, (minLoc[0] + mask.shape[0], minLoc[1] + mask.shape[1]), (0,0,255), 2, 8, 0 )
+    cv2.rectangle(crop, minLoc, (minLoc[0] + mask.shape[0], minLoc[1] + mask.shape[1]), (0,0,255), 2, 8, 0 )
+    cv2.imshow('non', crop)
 
 
    

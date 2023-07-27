@@ -1,37 +1,81 @@
-/home/rodion/yuliia0/aboba/test/1.jpg
-
 import cv2
-import pytesseract
+import numpy as np
+import glob
 
-# Путь для подключения tesseract
-# pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+image=g=cv2.imread("/home/rodion/yuliia0/aboba/test/5.jpg")
 
-# Подключение фото
-img = cv2.imread('yourPhoto.png')
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+"""початок знаходження кола"""
+image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+rows = image.shape[0]
+if rows >231:
+    circles = cv2.HoughCircles(image, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=32, minRadius=96, maxRadius=130)
+else:
+    circles = cv2.HoughCircles(image, cv2.HOUGH_GRADIENT, 1, rows / 8, param1=100, param2=30, minRadius=75, maxRadius=85)
 
-# Будет выведен весь текст с картинки
-config = r'--oem 3 --psm 6'
-# print(pytesseract.image_to_string(img, config=config))
+drawing = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.uint8) 
+for i in circles[0, :]:
+  x=int(i[0])
+  y=int(i[1])
+  r=int(i[2])
+  d=2*r
+  cv2.circle(drawing, (x, y), r, (0, 0, 255), 2)
+"""кінець кола"""
 
-# Делаем нечто более крутое!!!
+"""обрізка, квадрат"""
+canny= cv2.Canny(drawing, 60, 60 * 2)
+contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-data = pytesseract.image_to_data(img, config=config)
+boundRect = [None]*len(contours)
+for i, c in enumerate(contours):
+    boundRect[i] = cv2.boundingRect(cv2.approxPolyDP(c, 3, True))
+for i in range(len(contours)):
+    cv2.rectangle(drawing, (int(boundRect[i][0]), int(boundRect[i][1])), (int(boundRect[i][0]+boundRect[i][2]), 
+    int(boundRect[i][1]+boundRect[i][3])), (100,10,40), 2)
+    crop = g[(int(boundRect[i][1])):(int(boundRect[i][1]+boundRect[i][3])), (int(boundRect[i][0])):(int(boundRect[i][0]+boundRect[i][2]))]
+    '''v2.imshow("Area",crop )'''
+"""кінець квадрат"""
 
-# Перебираем данные про текстовые надписи
-for i, el in enumerate(data.splitlines()):
-	if i == 0:
-		continue
+gray= cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+ret, thresh = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+cv2.imshow("Area",thresh )
+digits = []
+numer=0
+'''цифри'''
+image = glob.glob('*.jpg')
+for name in image:
+    digit=cv2.imread(name)
+    print("numer -",numer)
+    numer+=1
+    width=digit.shape[0]
+    height=digit.shape[1]
+    digits.append(np.zeros((height, width), np.uint8))
+    '''cv2.putText(digits[-1], str(numer), (0, height), cv2.FONT_HERSHEY_SIMPLEX,3, (255, 255, 255), 5)'''
+    x0, y0, w, h = cv2.boundingRect(digits[-1])
+    digits[-1] = digits[-1][y0:y0+h, x0:x0+w]
+    '''cv2.imshow(digit, digits[-1])'''
 
-	el = el.split()
-	try:
-		# Создаем подписи на картинке
-		x, y, w, h = int(el[6]), int(el[7]), int(el[8]), int(el[9])
-		cv2.rectangle(img, (x, y), (w + x, h + y), (0, 0, 255), 1)
-		cv2.putText(img, el[11], (x, y), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255), 1)
-	except IndexError:
-		print("Операция была пропущена")
+def detect(thresh):
+    percent_white_pix = 0
+    digit = 0
+    for d in digits:
+        scaled_img = cv2.resize(thresh, d.shape[:2][::-1])
+        bitwise = cv2.bitwise_and(d, cv2.bitwise_xor(scaled_img, d))
+        before = np.sum(d == 255)
+        matching = 100 - (np.sum(bitwise == 255) / before * 100)
+        if percent_white_pix < matching:
+            percent_white_pix = matching
+            digit += 1
+    return digit
 
-# Отображаем фото
-cv2.imshow('Result', img)
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+for cnt in contours:
+    if cv2.contourArea(cnt) > 40:
+        brect = cv2.boundingRect(cnt)
+        x,y,w,h = brect
+        roi = thresh[y:y+h, x:x+w]
+        digit = detect(roi)
+        cv2.rectangle(crop, brect, (0,0,240), 1)
+        cv2.putText(crop, str(digit), (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 240, 0), 2)
+cv2.imshow('resultat',crop)
 cv2.waitKey(0)
+cv2.destroyAllWindows()
