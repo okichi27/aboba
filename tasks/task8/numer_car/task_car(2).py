@@ -2,14 +2,14 @@ import cv2
 import pytesseract
 import re
 
-img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer bio1/lich4.jpg')
+img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer2.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray, (3,3))
-cv2.imshow('cool', img)
+'''cv2.imshow('cool', img)'''
 
 """обрізка, квадрат"""
 '''gray = gray[110:gray.shape[1]-110, 80:gray.shape[0]-80]'''
-canny= cv2.Canny(gray, 240, 240 * 2)
+canny= cv2.Canny(gray, 260, 260 * 2)
 cv2.imshow('non',canny )
 contours, hierarchy = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -29,13 +29,13 @@ for i in range(len(contours)):
         """мікро-перерва для відшивання ліній"""
         list.append((x1,y1,x2,y2,length))
         """закінчення набору списку прямокутників-обітків"""
-cv2.imshow('Rt', gray)
+'''cv2.imshow('Rt', gray)'''
 """початок розслідування"""
 sorted=sorted(list,key=lambda line:line[4],reverse=True)
 '''print(sorted)'''
 x1,y1,x2,y2,dov=sorted[0]
 '''print(x1,y1,x2,y2,dov)'''
-cv2.rectangle(img, (x1, y1), (x2,y2), (100,10,40), 2)
+cv2.rectangle(img, (x1, y1), (x2,y2), (100,255,40), 2)
 crop = img[y1:y2, x1:x2]
 crop=cv2.GaussianBlur(crop,(3,3),0)
 crop_gray=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
