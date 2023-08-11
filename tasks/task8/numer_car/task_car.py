@@ -54,7 +54,7 @@ def canny (canny_param):
 
     def text_picture (afina):
 
-        crop_new=cv2.GaussianBlur(crop_new,(5,5),0)
+        crop_new=cv2.GaussianBlur(crop,(5,5),0)
         crop_gray=cv2.cvtColor(crop_new, cv2.COLOR_BGR2GRAY)
         ret, thresh = cv2.threshold(crop_gray, 170, 255, cv2.THRESH_TRUNC)
         '''cv2.imshow("Area",thresh )'''
