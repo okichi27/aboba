@@ -2,7 +2,7 @@ import cv2
 import pytesseract
 import re
 
-img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer3.jpg')
+img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer8.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray, (3,3))
 gray = cv2.bilateralFilter(gray, 11, 17, 17)

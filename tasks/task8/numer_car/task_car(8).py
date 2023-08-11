@@ -7,8 +7,8 @@ import numpy as np
 img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer8.jpg')
 img = imutils.resize(img, width=800 )
 cv2.imshow('orig', img)
-
 rows, cols, ch = img.shape
+
 pts1 = np.float32([[466, 366],
                    [463, 393],
                    [570, 370]])
@@ -61,7 +61,19 @@ x1,y1,x2,y2,dov=sorted[0]
 '''print(x1,y1,x2,y2,dov)'''
 cv2.rectangle(img, (x1+x1_numer, y1+y1_numer), (x2+x1_numer,y2+y1_numer), (100,255,40), 2)
 crop = img[y1+y1_numer:y2+y1_numer, x1+x1_numer:x2+x1_numer]
-'''cv2.imshow("cropp",crop )'''
+cv2.imshow("cropp",crop )
+
+rows, cols, ch = crop.shape
+'''pts1 = np.float32([[466, 366],
+                   [463, 393],
+                   [570, 370]])
+ 
+pts2 = np.float32([[466, 366],
+                   [466, 393],
+                   [570, 366]])
+ 
+M = cv2.getAffineTransform(pts1, pts2)
+img = cv2.warpAffine(img, M, (cols, rows))'''
 crop=cv2.GaussianBlur(crop,(5,5),0)
 crop_gray=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 ret, thresh = cv2.threshold(crop_gray, 170, 255, cv2.THRESH_TRUNC)

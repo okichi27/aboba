@@ -3,7 +3,7 @@ import pytesseract
 import imutils
 import re
 
-img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer6.jpg')
+img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer_car/car_numer3.jpg')
 img = imutils.resize(img, width=800 )
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray, (3,3))
