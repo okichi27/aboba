@@ -26,12 +26,11 @@ for i in range(len(cont1)):
     y1=int(boundRect[i][1])
     y2=int(boundRect[i][1]+boundRect[i][3])
     '''if (boundRect[i][3])>12 and boundRect[i][2]>12:'''
-    if 100*(boundRect[i][3])>boundRect[i][2] and 0*(boundRect[i][3])<boundRect[i][2]:
-        lines=cv2.rectangle(gray, (x1, y1), (x2, y2), (100,10,40), 2)
-        length=boundRect[i][2]
-        """мікро-перерва для відшивання ліній"""
-        list.append((x1,y1,x2,y2,length))
-        """закінчення набору списку прямокутників-обітків"""
+    lines=cv2.rectangle(gray, (x1, y1), (x2, y2), (100,10,40), 2)
+    length=boundRect[i][2]
+    """мікро-перерва для відшивання ліній"""
+    list.append((x1,y1,x2,y2,length))
+    """закінчення набору списку прямокутників-обітків"""
 '''cv2.imshow('Rt', gray)'''
 """початок розслідування"""
 sorted=sorted(list,key=lambda line:line[4],reverse=True)
@@ -54,43 +53,45 @@ cv2.imshow("Area",thresh )
 '''
 crop_gray = imutils.resize(crop_gray, width=50 )
 '''
-
-canny_thresh = cv2.Canny(crop_gray, 350, 350 * 2)
+canny_thresh = cv2.Canny(crop_gray, 360, 360 * 2)
+canny_thresh = cv2.blur(canny_thresh, (3,3))
 cv2.imshow('canny th', canny_thresh)
 
-cv2.imshow('canny th2', crop_gray)
-
 cont2, hier2 = cv2.findContours(canny_thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
+crop2=crop.copy()
 contours_poly = [None]*len(cont2)
 boundRect = [None]*len(cont2)
 for i, c in enumerate(cont2):
     contours_poly[i] = cv2.approxPolyDP(c, 3, True)
     boundRect[i] = cv2.boundingRect(cv2.approxPolyDP(c, 3, True))
-
+n=0
 for i in range(len(cont2)):
-    print("i - ", i)
-    if boundRect[i][2]>6 and boundRect[i][3]>7:
-        ''''cv2.rectangle(crop, (int(boundRect[i][0]), int(boundRect[i][1])), (int(boundRect[i][0]+boundRect[i][2]), 
-        int(boundRect[i][1]+boundRect[i][3])), (100,10,40), 2)'''
-        print("i new- ", i)
-        number_crop=crop2[int(boundRect[i][1]):int(boundRect[i][1]+boundRect[i][3]), int(boundRect[i][0]):int(boundRect[i][0]+boundRect[i][2])]
-        cv2.resize(number_crop, (28,28))
+    if boundRect[i][2]>8 and boundRect[i][3]>10:
+        if boundRect[i][2]<30 and boundRect[i][3]<40:
 
-        '''mnist =tf.keras.datasets.mnist
-        (x_train, y_train), (x_test, y_test)=mnist.load_data()
+            number_crop=crop2[int(boundRect[i][1]):int(boundRect[i][1]+boundRect[i][3]), int(boundRect[i][0]):int(boundRect[i][0]+boundRect[i][2])]
+            cv2.imshow('drawing mi1', number_crop)
+            number_crop=cv2.resize(number_crop, (28,28),)
+            print('2-',number_crop.shape)
 
-        model=tf.keras.models.load_model('handwritten.model')
-        picture=np.invert(np.array([number_crop]))
-        print(picture)
+            cv2.rectangle(crop, (int(boundRect[i][0]), int(boundRect[i][1])), (int(boundRect[i][0]+boundRect[i][2]), 
+            int(boundRect[i][1]+boundRect[i][3])), (100,10,40), 2)
+            '''print("i new- ", i, "x-",boundRect[i][2], "y-",boundRect[i][3])'''
+            n+=1
+            mnist =tf.keras.datasets.mnist
+            (x_train, y_train), (x_test, y_test)=mnist.load_data()
 
-        prediction=model.predict(picture)
-        print(f"ths digit is probably a {{{np.argmax(prediction)}}}")
-        plt.imshow(picture[0],cmap=plt.cm.binary)
-        plt.show()'''
-        cv2.imshow('drawing{}'.format(i), number_crop)
+            '''model=tf.keras.models.load_model('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network_task8/handwritten.model')'''
+            picture=np.invert(np.array([number_crop]))
+            print(picture)
 
-
+            prediction=model.predict(picture)
+            print(f"ths digit is probably a {{{np.argmax(prediction)}}}")
+            plt.imshow(picture[0],cmap=plt.cm.binary)
+            plt.show()
+            cv2.imshow('drawing{}'.format(i), number_crop)
+            cv2.imshow('drawing mi', crop)
+print('n-',n)
 '''
 
 text = pytesseract.image_to_string(thresh, config='stdout -c tessedit_char_whitelist=0123456789')
