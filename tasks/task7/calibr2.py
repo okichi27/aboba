@@ -21,7 +21,7 @@ objectp3d[0, :, :2] = np.mgrid[0:CHECKERBOARD[0],
 							0:CHECKERBOARD[1]].T.reshape(-1, 2)
 prev_img_shape = None
 
-images = glob.glob('*.jpg')
+images = glob.glob('*.png')
 
 for filename in images:
 	image = cv2.imread(filename)

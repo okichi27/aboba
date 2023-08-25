@@ -43,7 +43,7 @@ cv2.imwrite('calibresult.jpg', dst)'''
 
 
 n=0
-image = glob.glob('*picture.jpg')
+image = glob.glob('*.png')
 for name in image:
    imga = cv2.imread(name)
    n+=1
@@ -53,6 +53,6 @@ for name in image:
    dst = cv2.undistort(imga, mtx, dist, None, newcameramtx)
    x, y, w, h = roi
    dst = dst[y:y+h, x:x+w]
-   cv2.imwrite('calib2_{}.png'.format(n), dst)
-   cv2.imshow('calib2_{}'.format(n), dst)
+   cv2.imwrite('calib2.1_{}.png'.format(n), dst)
+'''   cv2.imshow('calib2.1_{}'.format(n), dst)'''
 cv2.destroyAllWindows()
