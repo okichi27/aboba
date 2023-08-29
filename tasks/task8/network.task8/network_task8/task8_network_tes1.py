@@ -70,9 +70,8 @@ for i in range(len(cont2)):
     if boundRect[i][2]>8 and boundRect[i][3]>10:
         if boundRect[i][2]<30 and boundRect[i][3]<40:
             number_crop=crop2[int(boundRect[i][1]):int(boundRect[i][1]+boundRect[i][3]), int(boundRect[i][0]):int(boundRect[i][0]+boundRect[i][2])]
-            number_crop = cv2.cvtColor(number_crop, cv2.COLOR_BGR2GRAY)
             cv2.imshow('drawing mi1', number_crop)
-            '''number_crop=cv2.resize(number_crop, (28,28),)'''
+            number_crop=cv2.resize(number_crop, (28,28),)
             print('2-',number_crop.shape)
 
             cv2.rectangle(crop, (int(boundRect[i][0]), int(boundRect[i][1])), (int(boundRect[i][0]+boundRect[i][2]), 
@@ -82,11 +81,6 @@ for i in range(len(cont2)):
             mnist =tf.keras.datasets.mnist
             (x_train, y_train), (x_test, y_test)=mnist.load_data()
 
-            text = pytesseract.image_to_string(number_crop, config='stdout -c tessedit_char_whitelist=0123456789')
-            print(text)
-
-            cv2.putText(crop,text,(int(boundRect[i][0]), int(boundRect[i][1])-10),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,0,0),2)
-            '''model.save("model.keras")
             model=tf.keras.models.load_model('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network_task8/handwritten.model')
             picture=np.invert(np.array([number_crop]))
             print(picture)
@@ -94,7 +88,7 @@ for i in range(len(cont2)):
             prediction=model.predict(picture)
             print(f"ths digit is probably a {{{np.argmax(prediction)}}}")
             plt.imshow(picture[0],cmap=plt.cm.binary)
-            plt.show()'''
+            plt.show()
             cv2.imshow('drawing{}'.format(i), number_crop)
             cv2.imshow('drawing crop', crop)
 print('n-',n)

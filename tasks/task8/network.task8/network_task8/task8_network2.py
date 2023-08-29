@@ -32,3 +32,7 @@ prediction=model.predict(img)
 print(f"ths digit is probably a {{{np.argmax(prediction)}}}")
 plt.imshow(img[0],cmap=plt.cm.binary)
 plt.show()
+
+
+
+

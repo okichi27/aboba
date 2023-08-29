@@ -1,14 +1,18 @@
+
+from numpy import argmax
+from keras.utils import load_img
+from keras.utils import img_to_array
+from keras.models import load_model
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import imutils
-import pytesseract
 
 
-img = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer bio1/lich4.jpg')
-img = imutils.resize(img, width=800 )
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+original = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer bio1/lich4.jpg')
+original = imutils.resize(original, width=800 )
+gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray, (3,3))
 '''cv2.imshow('cool', img)'''
 
@@ -32,14 +36,14 @@ for i in range(len(cont1)):
     """мікро-перерва для відшивання ліній"""
     list.append((x1,y1,x2,y2,length))
     """закінчення набору списку прямокутників-обітків"""
-'''cv2.imshow('Rt', gray)'''
+
 """початок розслідування"""
 sorted=sorted(list,key=lambda line:line[4],reverse=True)
 '''print(sorted)'''
 x1,y1,x2,y2,dov=sorted[0]
 '''print(x1,y1,x2,y2,dov)'''
-cv2.rectangle(img, (x1, y1), (x2,y2), (100,255,40), 2)
-crop=crop2 = img[y1:y2, x1:x2]
+cv2.rectangle(original, (x1, y1), (x2,y2), (100,255,40), 2)
+crop=crop2 = original[y1:y2, x1:x2]
 '''crop=cv2.GaussianBlur(crop,(3,3),0)'''
 crop_gray=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 '''ret, thresh = cv2.threshold(crop_gray, 110, 255, cv2.THRESH_TRUNC)'''
@@ -51,9 +55,6 @@ crop_gray = cv2.bilateralFilter(crop_gray, 11, 17, 17)
 cv2.imshow("Area",thresh )
 '''
 
-'''
-crop_gray = imutils.resize(crop_gray, width=50 )
-'''
 canny_thresh = cv2.Canny(crop_gray, 360, 360 * 2)
 canny_thresh = cv2.blur(canny_thresh, (3,3))
 cv2.imshow('canny th', canny_thresh)
@@ -70,51 +71,70 @@ for i in range(len(cont2)):
     if boundRect[i][2]>8 and boundRect[i][3]>10:
         if boundRect[i][2]<30 and boundRect[i][3]<40:
             number_crop=crop2[int(boundRect[i][1]):int(boundRect[i][1]+boundRect[i][3]), int(boundRect[i][0]):int(boundRect[i][0]+boundRect[i][2])]
-            number_crop = cv2.cvtColor(number_crop, cv2.COLOR_BGR2GRAY)
             cv2.imshow('drawing mi1', number_crop)
-            '''number_crop=cv2.resize(number_crop, (28,28),)'''
+            number_crop=cv2.resize(number_crop, (28,28),)
             print('2-',number_crop.shape)
 
             cv2.rectangle(crop, (int(boundRect[i][0]), int(boundRect[i][1])), (int(boundRect[i][0]+boundRect[i][2]), 
             int(boundRect[i][1]+boundRect[i][3])), (100,10,40), 2)
-            '''print("i new- ", i, "x-",boundRect[i][2], "y-",boundRect[i][3])'''
-            n+=1
-            mnist =tf.keras.datasets.mnist
-            (x_train, y_train), (x_test, y_test)=mnist.load_data()
 
-            text = pytesseract.image_to_string(number_crop, config='stdout -c tessedit_char_whitelist=0123456789')
-            print(text)
-
-            cv2.putText(crop,text,(int(boundRect[i][0]), int(boundRect[i][1])-10),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,0,0),2)
-            '''model.save("model.keras")
-            model=tf.keras.models.load_model('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network_task8/handwritten.model')
-            picture=np.invert(np.array([number_crop]))
-            print(picture)
-
-            prediction=model.predict(picture)
-            print(f"ths digit is probably a {{{np.argmax(prediction)}}}")
-            plt.imshow(picture[0],cmap=plt.cm.binary)
-            plt.show()'''
             cv2.imshow('drawing{}'.format(i), number_crop)
             cv2.imshow('drawing crop', crop)
-print('n-',n)
-'''
+            '''cv2.imwrite('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network2.2/numer_net3.{}.jpg'.format(i),number_crop)'''
 
-text = pytesseract.image_to_string(thresh, config='stdout -c tessedit_char_whitelist=0123456789')
-print ("text-",text)
+            img = load_img(number_crop, color_mode = "grayscale", target_size=(28, 28))
+            img = img_to_array(img)
+            img = img.reshape(1, 28, 28, 1)
+            img = img.astype('float32')
+            img = img / 255.0
+            
+            model = load_model('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network2.2/final_model.h5')
+            predict_value = model.predict(img)
+            digit = argmax(predict_value)
+            print(digit)
 
-only_number = re.findall(r'\d', text)
-only_number = ' '.join(map(str, only_number))
-print(only_number)
 
-contours2,_=cv2.findContours(thresh, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-for contour in contours2:
-    x,y,w,h=cv2.boundingRect(contour)
-    if w>10 and h>10:
-        cv2.putText(img,only_number,(x1, y1-10),cv2.FONT_HERSHEY_SIMPLEX,0.7,(0,0,0),2)
-        break
+'''# evaluate the deep model on the test dataset
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import load_model
+from tensorflow.keras.utils import to_categorical
+ 
+# load train and test dataset
+def load_dataset():
+ # load dataset
+ (trainX, trainY), (testX, testY) = mnist.load_data()
+ # reshape dataset to have a single channel
+ trainX = trainX.reshape((trainX.shape[0], 28, 28, 1))
+ testX = testX.reshape((testX.shape[0], 28, 28, 1))
+ # one hot encode target values
+ trainY = to_categorical(trainY)
+ testY = to_categorical(testY)
+ return trainX, trainY, testX, testY
+ 
+# scale pixels
+def prep_pixels(train, test):
+ # convert from integers to floats
+ train_norm = train.astype('float32')
+ test_norm = test.astype('float32')
+ # normalize to range 0-1
+ train_norm = train_norm / 255.0
+ test_norm = test_norm / 255.0
+ # return normalized images
+ return train_norm, test_norm
+ 
+# run the test harness for evaluating a model
+def run_test_harness():
+ # load dataset
+ trainX, trainY, testX, testY = load_dataset()
+ # prepare pixel data
+ trainX, testX = prep_pixels(trainX, testX)
+ # load model
+ model = load_model('final_model.h5')
+ # evaluate model on test dataset
+ _, acc = model.evaluate(testX, testY, verbose=0)
+ print('> %.3f' % (acc * 100.0))
+ 
+# entry point, run the test harness
+run_test_harness()'''
 
-img = imutils.resize(img, width=400 )'''
-
-'''cv2.imshow('Result',thresh)'''
 cv2.waitKey(0)
