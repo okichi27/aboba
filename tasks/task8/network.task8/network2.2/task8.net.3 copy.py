@@ -1,10 +1,9 @@
-
-# make a prediction for a new image.
 from numpy import argmax
-from keras.preprocessing.image import load_img
-from keras.preprocessing.image import img_to_array
+from keras.utils  import load_img
+from keras.utils import img_to_array
 from keras.models import load_model
- 
+import cv2
+
 # load and prepare the image
 def load_image(filename):
  # load the image
@@ -18,19 +17,23 @@ def load_image(filename):
  img = img / 255.0
  return img
  
-# load an image and predict the class
-def run_example():
- # load the image
- img = load_image('sample_image.png')
- # load model
- model = load_model('final_model.h5')
+original = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network2.2/numer.task8.3.jpg')
+cv2.imshow('zero', original)
+
+img = load_image('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network2.2/numer.task8.3.jpg')
+
+model = load_model('/home/rodion/yuliia0/aboba/tasks/task8/network.task8/network2.2/final_model.h5')
  # predict the class
- predict_value = model.predict(img)
- digit = argmax(predict_value)
- print(digit)
- 
-# entry point, run the example
-run_example()
+predict_value = model.predict(img)
+digit = argmax(predict_value)
+print(digit)
+
+
+
+
+
+
+
 
 
 
@@ -76,3 +79,5 @@ def run_test_harness():
  
 # entry point, run the test harness
 run_test_harness()'''
+
+cv2.waitKey(0)
