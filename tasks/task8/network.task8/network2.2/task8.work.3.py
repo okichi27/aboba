@@ -17,7 +17,7 @@ gray = cv2.blur(gray, (3,3))
 '''cv2.imshow('cool', img)'''
 
 """обрізка, квадрат"""
-canny= cv2.Canny(gray, 240, 240 * 2)
+canny= cv2.Canny(gray, 200, 200 * 2)
 cv2.imshow('non',canny )
 cont1, hier1 = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -43,7 +43,7 @@ sorted=sorted(list,key=lambda line:line[4],reverse=True)
 x1,y1,x2,y2,dov=sorted[0]
 '''print(x1,y1,x2,y2,dov)'''
 cv2.rectangle(original, (x1, y1), (x2,y2), (100,255,40), 2)
-crop=crop2 = original[y1:y2, x1:x2]
+crop=crop2 = original[y1-10:y2+10, x1-10:x2+10]
 '''crop=cv2.GaussianBlur(crop,(3,3),0)'''
 crop_gray=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 '''ret, thresh = cv2.threshold(crop_gray, 110, 255, cv2.THRESH_TRUNC)'''
@@ -55,9 +55,9 @@ crop_gray = cv2.bilateralFilter(crop_gray, 11, 17, 17)
 cv2.imshow("Area",thresh )
 '''
 
-canny_thresh = cv2.Canny(crop_gray, 330, 330 * 2)
+canny_thresh = cv2.Canny(crop_gray, 260, 260 * 2)
 canny_thresh = cv2.blur(canny_thresh, (3,3))
-'''cv2.imshow('canny th', canny_thresh)'''
+cv2.imshow('canny th', canny_thresh)
 
 cont2, hier2 = cv2.findContours(canny_thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 crop2=crop.copy()
@@ -66,7 +66,7 @@ boundRect = [None]*len(cont2)
 for i, c in enumerate(cont2):
     contours_poly[i] = cv2.approxPolyDP(c, 3, True)
     boundRect[i] = cv2.boundingRect(cv2.approxPolyDP(c, 3, True))
-
+n=0
 for i in range(len(cont2)):
     if boundRect[i][2]>8 and boundRect[i][3]>10:
         if boundRect[i][2]<30 and boundRect[i][3]<40:
@@ -104,48 +104,5 @@ for i in range(len(cont2)):
             print(digit)
             cv2.putText(crop,str(digit),(int(boundRect[i][0]),  int(boundRect[i][1])-2),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,100,0),2)
             cv2.imshow('result', crop)
-
-'''# evaluate the deep model on the test dataset
-from tensorflow.keras.datasets import mnist
-from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import to_categorical
- 
-# load train and test dataset
-def load_dataset():
- # load dataset
- (trainX, trainY), (testX, testY) = mnist.load_data()
- # reshape dataset to have a single channel
- trainX = trainX.reshape((trainX.shape[0], 28, 28, 1))
- testX = testX.reshape((testX.shape[0], 28, 28, 1))
- # one hot encode target values
- trainY = to_categorical(trainY)
- testY = to_categorical(testY)
- return trainX, trainY, testX, testY
- 
-# scale pixels
-def prep_pixels(train, test):
- # convert from integers to floats
- train_norm = train.astype('float32')
- test_norm = test.astype('float32')
- # normalize to range 0-1
- train_norm = train_norm / 255.0
- test_norm = test_norm / 255.0
- # return normalized images
- return train_norm, test_norm
- 
-# run the test harness for evaluating a model
-def run_test_harness():
- # load dataset
- trainX, trainY, testX, testY = load_dataset()
- # prepare pixel data
- trainX, testX = prep_pixels(trainX, testX)
- # load model
- model = load_model('final_model.h5')
- # evaluate model on test dataset
- _, acc = model.evaluate(testX, testY, verbose=0)
- print('> %.3f' % (acc * 100.0))
- 
-# entry point, run the test harness
-run_test_harness()'''
 
 cv2.waitKey(0)
