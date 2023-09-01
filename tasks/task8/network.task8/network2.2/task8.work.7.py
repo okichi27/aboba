@@ -10,14 +10,14 @@ import tensorflow as tf
 import imutils
 
 
-original = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer bio1/lich7.jpg')
+original = cv2.imread('/home/rodion/yuliia0/aboba/tasks/task8/numer bio1/lich10.jpg')
 original = imutils.resize(original, width=800 )
 gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
 gray = cv2.blur(gray, (3,3))
 '''cv2.imshow('cool', img)'''
 
 """обрізка, квадрат"""
-canny= cv2.Canny(gray, 230, 230 * 2)
+canny= cv2.Canny(gray, 310, 310 * 2)
 cv2.imshow('non',canny )
 cont1, hier1 = cv2.findContours(canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -43,7 +43,7 @@ sorted_=sorted(list,key=lambda line:line[4],reverse=True)
 x1,y1,x2,y2,dov=sorted_[0]
 '''print(x1,y1,x2,y2,dov)'''
 cv2.rectangle(original, (x1, y1), (x2,y2), (100,255,40), 2)
-crop=crop2 = original[y1:y2, x1:x2]
+crop=crop2 = original[y1-10:y2+10, x1:x2]
 '''crop=cv2.GaussianBlur(crop,(3,3),0)'''
 crop_gray=cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
 '''ret, thresh = cv2.threshold(crop_gray, 110, 255, cv2.THRESH_TRUNC)'''
@@ -55,7 +55,7 @@ crop_gray = cv2.bilateralFilter(crop_gray, 11, 17, 17)
 cv2.imshow("Area",thresh )
 '''
 
-canny_thresh = cv2.Canny(crop_gray, 260, 260 * 2)
+canny_thresh = cv2.Canny(crop_gray, 300, 300 * 2)
 canny_thresh = cv2.blur(canny_thresh, (3,3))
 cv2.imshow('canny th', canny_thresh)
 cont2, hier2 = cv2.findContours(canny_thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -69,7 +69,7 @@ for i, c in enumerate(cont2):
 
 list_numer=[]
 for i in range(len(cont2)):
-    if boundRect[i][2]>4 and boundRect[i][3]>6:
+    if boundRect[i][2]>6 and boundRect[i][3]>8:
         if boundRect[i][2]<30 and boundRect[i][3]<40:
 
             length_numer=boundRect[i][2]+boundRect[i][3]
@@ -126,10 +126,10 @@ while ramka_numer<len(sorted_numer):
     number_crop = cv2.cvtColor(number_crop, cv2.COLOR_BGR2GRAY)
     cv2.imshow('original', number_crop)
     number_crop = cv2.equalizeHist(number_crop)
-    kernel = np.ones((47, 47), np.uint8)
+    kernel = np.ones((53, 53), np.uint8)
     number_crop=cv2.erode(number_crop, kernel)
     cv2.imshow('canny th 3',number_crop)
-    n,dst = cv2.threshold(number_crop, 120, 255, cv2.THRESH_BINARY)
+    n,dst = cv2.threshold(number_crop, 100, 255, cv2.THRESH_BINARY)
     cv2.imshow('canny th dst', dst)
     dst=cv2.resize(dst, (28,28),)
     n1,dst1 = cv2.threshold(dst, 115, 255, cv2.THRESH_BINARY)
@@ -146,6 +146,6 @@ while ramka_numer<len(sorted_numer):
     predict_value = model.predict(img)
     digit = argmax(predict_value)
     print(digit)
-    cv2.putText(crop,str(digit),(x1,  y1-2),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255,100,0),2)
+    cv2.putText(crop,str(digit),(x1,  y1-2),cv2.FONT_HERSHEY_SIMPLEX,0.9,(255,100,0),2)
     cv2.imshow('result', crop)
 cv2.waitKey(0)
