@@ -13,11 +13,16 @@ In turn, it consists of folders of materials divided by topic. Each contains **.
     - **unstructured coordinates**;
     - **MATPLOTLIB.pdf:** report on the work of each code.
    
-2. **lib_opencv2** - learning the OpenCV library.
+2. **lib_opencv** - learning the OpenCV library.
 In turn, it consists of folders of materials divided by topic. Each contains **.py** files with code for each theme.   
     - **basic:** codes + report to the topic;
     - **cont:** work with contours(codes) + report to the topic;
     - **histo:** work with histograms(codes) + report to the topic;
     - **trans:** work with transformations(codes) + report to the topic;
     - **others:** codes + report to the topic.
+  
+##tasks
+
+##instruction
+
 #cringe#apathy#love
