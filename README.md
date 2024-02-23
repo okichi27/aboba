@@ -28,11 +28,12 @@ This section :
 
 ## instruction
 In this sector, the instructions that I compiled during the execution of the previous tasks are collected.
-    - **instruction cv-pi.pdf**. About install OpenCV on Raspberry Pi 4B;   
-    - **instruction hotspot-pi.pdf**. About setting up a Wi-fi access point on Raspberry Pi 4B;
-    - **instruction ssh-pi.pdf**. About starting to use Raspberry Pi 4B via ssh;
-    - **instruction start-coral.pdf**. About starting to use Google Coral;
-    - **instruction yolov7-jetson.pdf**. About installing and running Yolo7 on Jetson Nano.
+
+- **instruction cv-pi.pdf**. About install OpenCV on Raspberry Pi 4B;   
+- **instruction hotspot-pi.pdf**. About setting up a Wi-fi access point on Raspberry Pi 4B;
+- **instruction ssh-pi.pdf**. About starting to use Raspberry Pi 4B via ssh;
+- **instruction start-coral.pdf**. About starting to use Google Coral;
+- **instruction yolov7-jetson.pdf**. About installing and running Yolo7 on Jetson Nano.
 
 
 
