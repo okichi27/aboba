@@ -28,7 +28,6 @@ This section :
 
 ## instruction
 In this sector, the instructions that I compiled during the execution of the previous tasks are collected:
-
     - **instruction cv-pi.pdf**;
 About install OpenCV on Raspberry Pi 4B.   
     - **instruction hotspot-pi.pdf**;
