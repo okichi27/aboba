@@ -27,7 +27,7 @@ In turn, it consists of folders of materials divided by topic. Each contains **.
 This section :
 
 ## instruction
-In this sector, the instructions that I compiled during the execution of the previous tasks are collected:
+In this sector, the instructions that I compiled during the execution of the previous tasks are collected.
     - **instruction cv-pi.pdf**. About install OpenCV on Raspberry Pi 4B;   
     - **instruction hotspot-pi.pdf**. About setting up a Wi-fi access point on Raspberry Pi 4B;
     - **instruction ssh-pi.pdf**. About starting to use Raspberry Pi 4B via ssh;
