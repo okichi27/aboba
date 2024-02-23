@@ -24,15 +24,21 @@ In turn, it consists of folders of materials divided by topic. Each contains **.
     - **others:** codes + report to the topic.
   
 ## tasks
-This section :
+This item lists the tasks described and uploaded to GitHub:
+- **instruction cv-pi.pdf**.
+      - hgjghkgk
+- **instruction cv-pi.pdf**.
+
+
+
+
+
 
 ## instruction
 In this sector, the instructions that I compiled during the execution of the previous tasks are collected.
 
-- **instruction cv-pi.pdf**.
-About install OpenCV on Raspberry Pi 4B;   
-- **instruction hotspot-pi.pdf**.
-About setting up a Wi-fi access point on Raspberry Pi 4B;
+- **instruction cv-pi.pdf**. About install OpenCV on Raspberry Pi 4B;   
+- **instruction hotspot-pi.pdf**. About setting up a Wi-fi access point on Raspberry Pi 4B;
 - **instruction ssh-pi.pdf**. About starting to use Raspberry Pi 4B via ssh;
 - **instruction start-coral.pdf**. About starting to use Google Coral;
 - **instruction yolov7-jetson.pdf**. About installing and running Yolo7 on Jetson Nano.
