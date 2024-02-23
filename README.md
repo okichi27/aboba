@@ -27,9 +27,9 @@ In turn, it consists of folders of materials divided by topic. Each contains **.
 This item lists the tasks described and uploaded to GitHub:
 1. **repotrs**.
 There are tasks that were done with reports:
-- **ai.docx**; - description of artificial intelligence; 
-- **neural networks.docx**; - description of neural networks;
-- **Segmentation.pdf**; - description, instructions for downloading and running the best neural networks for object recognition.
+    - **ai.docx**; - description of artificial intelligence; 
+    - **neural networks.docx**; - description of neural networks;
+    - **Segmentation.pdf**; - description, instructions for downloading and running the best neural networks for object recognition.
    
 3. ****.
 4. ****.
