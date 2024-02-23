@@ -33,13 +33,20 @@ There are tasks that were done with reports:
    
 2. **test10**
     - **-_-**;  
-5. ****
-    - ****;
-    - ****; 
-7. ****
-8. ****
-
-
+5. **calibration**
+    - calibration **code**;
+    - calibration **photo**; 
+7. **test_conter**
+    - several variations of working **codes** for individual images;
+    - **images** on which testing was carried out;
+    - additional **folder "add_nn",** in which there was an attempt to make part of the code through a neural network;
+9. **test_pi**
+    - test **code**;
+    - **photo** test; 
+11. **yolov**
+    - **Тестування стандартних моделей YOLOv5 - График 1 - Line.pdf**;
+    - **Тестування стандартних моделей YOLOv5.pdf**;
+    - **Тестування стандартних моделей YOLOv8.pdf**;
 ## instruction
 In this sector, the instructions that I compiled during the execution of the previous tasks are collected.
 
