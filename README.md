@@ -44,9 +44,9 @@ There are tasks that were done with reports:
     - test **code**;
     - **photo** test; 
 11. **yolov**
-    - **Тестування стандартних моделей YOLOv5 - График 1 - Line.pdf**;
-    - **Тестування стандартних моделей YOLOv5.pdf**;
-    - **Тестування стандартних моделей YOLOv8.pdf**;
+    - **Тестування стандартних моделей YOLOv5 - График 1 - Line.pdf**; - Testing standard YOLOv5 models - Chart 1;
+    - **Тестування стандартних моделей YOLOv5.pdf**; - Testing standard models YOLOv5;
+    - **Тестування стандартних моделей YOLOv8.pdf**; - Testing standard models YOLOv8.
 ## instruction
 In this sector, the instructions that I compiled during the execution of the previous tasks are collected.
 
